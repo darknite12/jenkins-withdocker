@@ -29,7 +29,7 @@ docker volume create jenkins_home
 docker service create --name jenkins -p 8080:8080 -p 50000:50000 --replicas=1 --mount type=volume,src=jenkins_home,dst=/var/jenkins_home --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock dockerhubusername/jenkins-withdocker
 ```
 
-NOTE: the mount of type bind must be used.
+NOTE: the mount of type bind must be used. Also note that the version that is installed in the Dockerfile should be compatible with the version the docker host is using.
 
 ## References
 [~jpetazzo/Using Docker-in-Docker for your CI or testing environment? Think twice](http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/) - This was the first useful link that guided me to the idea of running docker commands in Jenkins
