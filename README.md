@@ -25,6 +25,7 @@ docker pull dockerhubusername/jenkins-withdocker
 docker volume create jenkins_home
 ```
 3. Deploy the docker service
+```
 docker service create --name jenkins -p 8080:8080 -p 50000:50000 --replicas=1 --mount type=volume,src=jenkins_home,dst=/var/jenkins_home --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock dockerhubusername/jenkins-withdocker
 ```
 
