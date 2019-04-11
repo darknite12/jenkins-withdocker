@@ -1,0 +1,22 @@
+node {
+    def mvnHome
+    stage('Preparation') {
+        git branch: 'master', credentialsId: '86a41f53-e4e7-4da3-a69a-6015f228baeb', url: 'https://github.com/darknite12/jenkins-withdocker.git'
+        mvnHome = tool 'm3'
+        env.JAVA_HOME="${tool 'java8'}"
+        env.DOCKER_HOST="unix:///var/run/docker.sock"
+        env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+    }
+   
+   stage('Build Docker Image') {
+       withCredentials([usernamePassword(credentialsId: '1267e48d-4109-46c6-b4de-8063ba64e7d0', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_USR')]) {
+           sh "'${mvnHome}/bin/mvn' clean install -Ddocker.image.prefix=$DOCKER_HUB_USR docker:build"
+       }
+   }
+   
+   stage('Push Docker Image') {
+       withCredentials([usernamePassword(credentialsId: '1267e48d-4109-46c6-b4de-8063ba64e7d0', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_USR')]) {
+           sh "'${mvnHome}/bin/mvn' -Ddocker.username=$DOCKER_HUB_USR -Ddocker.password=$DOCKER_HUB_PWD -Ddocker.image.prefix=$DOCKER_HUB_USR docker:push"
+       }
+   }
+}
